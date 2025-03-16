@@ -40,7 +40,22 @@ to this section's matching END comment to see page-specific styles.
   justify-content: center;
 }
 
-.card {
+.order-card {
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.order-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.animated-card {
   /* position: relative; */
   width: 90%;
   /* max-width: 300px; */
@@ -53,19 +68,19 @@ to this section's matching END comment to see page-specific styles.
   transform-style: preserve-3d;
 }
 
-.card:hover {
+.animated-card:hover {
   transform: rotateY(10deg) rotateX(10deg) scale(1.05);
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
 }
 
-.card img {
+.animated-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease-in-out;
 }
 
-.card:hover img {
+.animated-card:hover img {
   transform: scale(1.1);
 }
 
@@ -87,6 +102,29 @@ to this section's matching END comment to see page-specific styles.
 .card:hover .card-title {
   background: rgba(0, 0, 0, 0.8);
 }
+
+
+.order-card {
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.order-card img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.order-card:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 6px 6px rgba(0, 0, 0, 0.2);
+}
+
 
 /* Basic page style resets */
 * {

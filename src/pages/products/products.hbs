@@ -1,0 +1,69 @@
+{{> header}}
+{{> navbar}}
+
+<div class="wrapper mt-5">
+    <div class="content container-fluid" role="main">
+        <div class="mt-5 text-center">
+            <div class="border p-3 d-flex justify-content-center">
+                <img src="/images/logo (2).png" class="img-fluid" alt="Logo" style="max-width: 250px;">
+            </div>
+            <div class="alert alert-danger mt-4 d-none" id="error-alert" role="alert">
+                אירעה שגיאה במהלך החיפוש
+            </div>
+            <h1 class="three-d-text" id="name">{{category.name}}</h1>
+
+            <div class="row mt-3">
+                <div class="col-12 d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-sm btn-light" onclick="window.location.href='/products'">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    {{< backButton}} <button type="button" class="btn btn-sm btn-light"
+                        onclick="window.location.href='/products/{{category.id}}/add'">
+                        <i class="fas fa-plus"></i>
+                        </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar mt-4 d-flex justify-content-center">
+                <form action="/products/{{category.id}}" method="get" class="form-inline w-100"
+                    style="max-width: 500px;">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="חפש הזמנה..."
+                            value="{{searchQuery}}">
+                        <button type="submit" class="btn btn-primary">חפש</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Products Section -->
+            <div class="container mt-5" id="products-container">
+
+                {{#if products}}
+                <p class="text-muted mb-4 shadow-sm">
+                    נמצאו {{products.length}} הזמנות
+                </p>
+                <div class="row justify-content-center">
+                    {{#each products}}
+                    <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+                        <a class="card h-100 shadow-sm text-decoration-none" href="/products/{{this.id}}">
+                            <img src="{{this.url}}" class="card-img-top img-fluid" alt="{{this.name}}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{this.name}}</h5>
+                            </div>
+                        </a>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <div class="alert alert-warning mt-4" role="alert">
+                    אין מוצרים להצגה
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/javascript/products.js"></script>
+{{> footer}}

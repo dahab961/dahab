@@ -78,6 +78,55 @@
             transition: transform 0.3s ease-in-out;
         }
 
+        .navbar {
+            margin-bottom: 20px;
+        }
+
+        .title {
+            color: {
+                    {
+                    color
+                }
+            }
+
+            ;
+        }
+
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar.hide {
+            transform: translateX(-280px);
+        }
+
+        .content {
+            margin-left: 280px;
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 10px;
+        }
+
         .sidebar.hide {
             transform: translateX(-280px);
         }
