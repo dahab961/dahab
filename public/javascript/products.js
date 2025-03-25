@@ -1,86 +1,85 @@
-// 'use strict';
+'use strict';
+import { status, json, show, hide } from "./funcs.js";
 
-// (function () {
-//     document.addEventListener('DOMContentLoaded', function () {
-//         const status = (response) => {
-//             if (response.status === 404) {
-//                 console.error("Error 404: Not Found");
-//                 return Promise.reject(new Error("404 Not Found"));
-//             }
-//             if (response.status >= 200 && response.status < 300) {
-//                 return Promise.resolve(response);
-//             } else {
-//                 return response.text().then(errorMessage => {
-//                     console.error("Error:", errorMessage);
-//                     return Promise.reject(new Error(errorMessage));
-//                 });
-//             }
-//         };
-//         const json = (response) => response.json();
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        let products = [];
 
-//         console.log('DOM is ready');
-//         const searchInput = document.querySelector('#search input');
-//         const errorAlert = document.querySelector('#error-alert');
-//         const productsContainer = document.querySelector('#products-container');
-//         const titleElem = document.querySelector('#name');
 
-//         const fetchAndRenderProducts = async (search) => {
-//             errorAlert.classList.add('d-none'); // Hide error alert on new input
+        const productsContainer = document.getElementById("products-container");
+        const searchInput = document.getElementById("searchInput");
+        const errorAlert = document.getElementById("error-alert");
+        const categoryName = document.getElementById("category-name");
+        const categoryId = document.getElementById("category-id").value;
+        const loadingSpinner = document.getElementById("loading-spinner");
 
-//             try {
-//                 let categoryId = 'VWxYzAbCdEfG6'; // Replace with actual category ID
+        const refreshButton = document.getElementById("refresh-products");
 
-//                 await fetch(`/api/products?categoryId=${categoryId}&search=${search}`)
-//                     .then(status)
-//                     .then(json)
-//                     .then((data) => {
-//                         console.log("data: ", data);
+        refreshButton.addEventListener("click", async () => await fetchProducts());
 
-//                         //     if (!data || !data.category || !Array.isArray(data.products)) {
-//                         //         throw new Error("Invalid response structure");
-//                         //     }
+        async function fetchProducts() {
+            try {
+                show(loadingSpinner);
+                hide(errorAlert);
+                hide(productsContainer);
 
-//                         //     let products = data.products;
-//                         //     let name = data.category.name;
+                await fetch(`/api/products/${categoryId}`, {
+                    headers: { "Content-Type": "application/json" }
+                }).then(status).then(json).then(data => {
+                    products = data.products;
 
-//                         //     titleElem.textContent = name;
+                    if (searchInput.value)
+                        products = products.filter(product =>
+                            product.name.toLowerCase().includes(searchQuery.toLowerCase())
+                        );
+                    displayProducts(products);
+                    categoryName.textContent = data.category.name;
+                })
+            } catch (error) {
 
-//                         //     let productsHtml = '';
+                console.error("Error fetching products:", error);
+                show(errorAlert);
+            } finally {
+                hide(loadingSpinner);
+                show(productsContainer);
+                searchInput.focus();
+            }
+        }
 
-//                         //     if (products.length > 0) {
-//                         //         productsHtml += '<div class="row justify-content-center">';
-//                         //         products.forEach((product) => {
-//                         //             productsHtml += `
-//                         //                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-//                         //                         <a class="card h-100 shadow-sm text-decoration-none" href="/products/${product.id}">
-//                         //                             <img src="${product.url}" class="card-img-top img-fluid" alt="${product.name}">
-//                         //                             <div class="card-body text-center">
-//                         //                                 <h5 class="card-title">${product.name}</h5>
-//                         //                             </div>
-//                         //                         </a>
-//                         //                     </div>`;
-//                         //         });
-//                         //         productsHtml += '</div>';
-//                         //     } else {
-//                         //         productsHtml += '<div class="alert alert-warning mt-4" role="alert">אין מוצרים להצגה</div>';
-//                         //     }
+        function displayProducts(products) {
+            if (!products.length) {
+                productsContainer.innerHTML = `<div class="alert alert-warning mt-4">אין מוצרים להצגה</div>`;
+                return;
+            }
 
-//                         //     productsContainer.innerHTML = productsHtml;
-//                     });
-//             } catch (error) {
-//                 console.error("Error fetching products:", error);
-//                 errorAlert.classList.remove('d-none');
-//             }
-//         };
+            let html = `<p class="text-muted mb-4 shadow-sm">נמצאו ${products.length} הזמנות</p><div class="row" id="products">`;
+            products.forEach(product => {
+                html += `
+            <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <a class="card animated-card2 h-100 shadow-sm text-decoration-none" href="/products/${product.id}">
+                    <img src="${product.image}" class="card-img-top img-fluid" alt="${product.name}">
+                    <h5 class="">${product.name}</h5>
+                    <div class="card-body text-center">
+                        </div>
+                        <div class=" text-dark bg-transparent border-top-0">
+                          קוד:  ${product.id} <br>
+                        </div>
+                </a>
+            </div>`;
+            });
 
-//         // Fetch products on page load
-//         fetchAndRenderProducts('');
+            html += `</div>`;
+            productsContainer.innerHTML = html;
+        }
 
-//         // Fetch products on input change
-//         searchInput.addEventListener('input', (event) => {
-//             let search = event.target.value.trim();
-//             console.log("test", search);
-//             fetchAndRenderProducts(search);
-//         });
-//     });
-// })();
+        searchInput.addEventListener("input", (event) => {
+            event.preventDefault();
+            const searchQuery = searchInput.value.trim();
+            errorAlert.classList.add("d-none");
+            const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
+            displayProducts(filteredProducts);
+        });
+
+        fetchProducts();
+    });
+})();

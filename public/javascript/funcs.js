@@ -1,3 +1,5 @@
+const HEADERS = { "Content-Type": "application/json" };
+
 const status = (response) => {
     if (response.status === 404) return Promise.reject(new Error("404 Not Found"));
     if (response.status >= 200 && response.status < 300) {
@@ -8,7 +10,22 @@ const status = (response) => {
         );
     }
 };
+
+const show = (element) => element.classList.remove("d-none");
+const hide = (element) => element.classList.add("d-none");
+
 const json = (response) => response.json();
+
+const formatDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
 
 const getMsgWarning = (msg, title, isDoc = false) => {
     const toast = createNode("div", "toast", "text-white", "bg-dark", "border-info", "show");
@@ -28,14 +45,12 @@ const getMsgWarning = (msg, title, isDoc = false) => {
     appendChildrens(innerContainer, toastBody);
     appendChildrens(toast, toastHeader, innerContainer);
     toastHeader.appendChild(closeBtn);
-    // add toast to the body at end of page or to the container
     isDoc ? document.body.appendChild(toast) : toastsContainer.appendChild(toast);
-    //remove Toast from DOM when clicked
     closeBtn.addEventListener("click", () => {
         toast.remove();
     });
 }
-
+const isHiddenElement = (element) => element?.classList.contains("d-none");
 
 function serverErrorHandler(error, deleteRequest = false) {
     let errorMessage;
@@ -65,4 +80,4 @@ function serverErrorHandler(error, deleteRequest = false) {
     getMsgWarning(errorMessage, "Error");
 }
 
-export { status, json, serverErrorHandler };
+export { HEADERS, isHiddenElement, formatDate, status, json, serverErrorHandler, hide, show, getMsgWarning };
